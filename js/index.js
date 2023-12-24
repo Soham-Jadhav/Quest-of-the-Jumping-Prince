@@ -24,7 +24,45 @@ let keys = {
         pressed: false,
     },
 }
+let floorCollusionBlocks = [];
+let platformCollusionBlocks = [];
 let animationId;
+
+let floorCollusions2D = [];
+for (let i = 0; i < floorCollusions.length; i += 36) {
+    floorCollusions2D.push(floorCollusions.slice(i, i + 36));
+}
+
+floorCollusions2D.forEach((row, rowIndex) => {
+    row.forEach((column, columnIndex) => {
+        if (column === 202) {
+            floorCollusionBlocks.push(new CollusionsBlock({
+                position: {
+                    x: columnIndex * 16,
+                    y: rowIndex * 16,
+                }
+            }));
+        }
+    });
+});
+
+let platformCollusions2D = [];
+for (let i = 0; i < platformCollisions.length; i += 36) {
+    platformCollusions2D.push(platformCollisions.slice(i, i + 36));
+}
+
+platformCollusions2D.forEach((row, rowIndex) => {
+    row.forEach((column, columnIndex) => {
+        if (column === 202) {
+            platformCollusionBlocks.push(new CollusionsBlock({
+                position: {
+                    x: columnIndex * 16,
+                    y: rowIndex * 16,
+                }
+            }));
+        }
+    });
+});
 
 let background = new Sprite({
     position: {
@@ -37,11 +75,13 @@ let background = new Sprite({
 
 let player = new Player({
     position: {
-        x: 200,
-        y: 100
+        x: 50,
+        y: 300
     },
-    width: 100,
-    height: 100,
+    width: 25,
+    height: 25,
+    floorCollusionBlocks: floorCollusionBlocks,
+    platformCollusionBlocks: platformCollusionBlocks,
 });
 
 function animate() {
@@ -55,7 +95,13 @@ function animate() {
     context.scale(4, 4);
     context.translate(0, -background.image.height + scaledCanvas.height);
     background.update();
-    context.restore();
+
+    floorCollusionBlocks.forEach(floorCollusionBlock => {
+        floorCollusionBlock.update();
+    });
+    platformCollusionBlocks.forEach(platformCollusionBlock => {
+        platformCollusionBlock.update();
+    });
 
     player.velocity.x = 0;
     if (keys.a.pressed) {
@@ -69,6 +115,7 @@ function animate() {
     }
 
     player.update();
+    context.restore();
 }
 
 animate();
