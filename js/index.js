@@ -5,7 +5,7 @@ canvas.width = 1024;
 canvas.height = 576;
 
 const gravity = 0.5;
-const speed = 5;
+const speed = 2;
 const scaledCanvas = {
     width: canvas.width / 4,
     height: canvas.height / 4,
@@ -82,6 +82,49 @@ let player = new Player({
     height: 25,
     floorCollusionBlocks: floorCollusionBlocks,
     platformCollusionBlocks: platformCollusionBlocks,
+    imageSrc: './../assets/warrior/Idle.png',
+    animations: {
+        idleRight: {
+            imageSrc: './assets/warrior/Idle.png',
+            maxFrames: 8,
+            holdFrames: 5,
+        },
+        idleLeft: {
+            imageSrc: './assets/warrior/IdleLeft.png',
+            maxFrames: 8,
+            holdFrames: 5,
+        },
+        runRight: {
+            imageSrc: './assets/warrior/Run.png',
+            maxFrames: 8,
+            holdFrames: 5,
+        },
+        runLeft: {
+            imageSrc: './assets/warrior/RunLeft.png',
+            maxFrames: 8,
+            holdFrames: 5,
+        },
+        jumpRight: {
+            imageSrc: './assets/warrior/Jump.png',
+            maxFrames: 2,
+            holdFrames: 4,
+        },
+        jumpLeft: {
+            imageSrc: './assets/warrior/JumpLeft.png',
+            maxFrames: 2,
+            holdFrames: 4,
+        },
+        fallRight: {
+            imageSrc: './assets/warrior/Fall.png',
+            maxFrames: 2,
+            holdFrames: 4,
+        },
+        fallLeft: {
+            imageSrc: './assets/warrior/FallLeft.png',
+            maxFrames: 2,
+            holdFrames: 4,
+        },
+    }
 });
 
 function animate() {
@@ -105,13 +148,42 @@ function animate() {
 
     player.velocity.x = 0;
     if (keys.a.pressed) {
+        player.switchSprite('runLeft');
+        player.lastDirection = 'left';
         player.velocity.x = -speed;
     }
     else if (keys.d.pressed) {
+        player.switchSprite('runRight');
+        player.lastDirection = 'right';
         player.velocity.x = speed;
+    }
+    else if (player.velocity.y === 0) {
+        if (player.lastDirection === 'left') {
+            player.switchSprite('idleLeft');
+        }
+        else {
+            player.switchSprite('idleRight');
+        }
     }
     else {
         player.velocity.x = 0;
+    }
+
+    if (player.velocity.y < 0) {
+        if (player.lastDirection === 'left') {
+            player.switchSprite('jumpLeft');
+        }
+        else {
+            player.switchSprite('jumpRight');
+        }
+    }
+    else if (player.velocity.y > 0) {
+        if (player.lastDirection === 'left') {
+            player.switchSprite('fallLeft');
+        }
+        else {
+            player.switchSprite('fallRight');
+        }
     }
 
     player.update();
