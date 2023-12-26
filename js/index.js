@@ -135,7 +135,6 @@ let player = new Player({
     }
 });
 
-// camera.position.y = -background.image.height + scaledCanvas.height;
 camera.position.y = -backgroundImageHeight + scaledCanvas.height;
 
 function animate() {
@@ -149,13 +148,6 @@ function animate() {
     context.scale(4, 4);
     context.translate(camera.position.x, camera.position.y);
     background.update();
-
-    // floorCollusionBlocks.forEach(floorCollusionBlock => {
-    //     floorCollusionBlock.update();
-    // });
-    // platformCollusionBlocks.forEach(platformCollusionBlock => {
-    //     platformCollusionBlock.update();
-    // });
 
     player.velocity.x = 0;
     if (keys.a.pressed) {
@@ -209,4 +201,3 @@ function animate() {
 }
 
 animate();
-// animate();

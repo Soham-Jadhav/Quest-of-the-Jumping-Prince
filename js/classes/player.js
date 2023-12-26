@@ -22,9 +22,6 @@ class Player extends Sprite {
             holdFrames: holdFrames,
             scale: scale,
         });
-        // this.position = position;
-        // this.width = width;
-        // this.height = height;
         this.color = color;
         this.lastDirection = 'right';
         this.velocity = {
@@ -59,42 +56,15 @@ class Player extends Sprite {
         };
     }
 
-    // draw() {
-    //     context.fillStyle = this.color;
-    //     context.fillRect(this.position.x, this.position.y, this.width, this.height);
-    // }
-
     update() {
         this.updateFrames();
         this.updateCamerabox();
-
-        // // Draw Image
-        // context.fillStyle = 'rgba(0, 0, 255, 0.2)';
-        // context.fillRect(this.position.x, this.position.y, this.width, this.height);
-
-        // // Draw hitbox
-        // context.fillStyle = 'rgba(0, 255, 0, 0.2)';
-        // context.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
-
-        // // Draw cameraBox
-        // context.fillStyle = 'rgba(255, 0, 0, 0.2)';
-        // context.fillRect(this.cameraBox.position.x, this.cameraBox.position.y, this.cameraBox.width, this.cameraBox.height);
-
         this.draw();
 
         this.position.x += this.velocity.x;
         this.updateHitbox();
         this.checkHorizontalCollusions();
-
         this.applyGravity();
-        // this.position.y += this.velocity.y;
-        // if (this.position.y + this.height + this.velocity.y < canvas.height) {
-        //     this.velocity.y += gravity;
-        // }
-        // else {
-        //     this.velocity.y = 0;
-        // }
-
         this.updateHitbox();
         this.checkVerticalCollusions();
     }
@@ -244,13 +214,6 @@ class Player extends Sprite {
                     this.position.y = platformCollusionBlock.position.y - offset - 0.05;
                     break;
                 }
-
-                // if (this.velocity.y < 0) {
-                //     this.velocity.y = 0;
-                //     const offset = this.hitbox.position.y - this.position.y;
-                //     this.position.y = platformCollusionBlock.position.y + platformCollusionBlock.height - offset + 0.05;
-                //     break
-                // }
             }
         }
     }
