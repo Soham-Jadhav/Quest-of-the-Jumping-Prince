@@ -3,7 +3,7 @@ addEventListener('keydown', ({ key }) => {
         case 'w':
             keys.w.pressed = true;
             if (player.velocity.y === 0) {
-                player.velocity.y = -8;
+                player.velocity.y = -4;
             }
 
             break;

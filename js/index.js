@@ -4,12 +4,13 @@ const context = canvas.getContext('2d');
 canvas.width = 1024;
 canvas.height = 576;
 
-const gravity = 0.5;
+const gravity = 0.1;
 const speed = 2;
 const scaledCanvas = {
     width: canvas.width / 4,
     height: canvas.height / 4,
 };
+const backgroundImageHeight = 432;
 let keys = {
     w: {
         pressed: false,
@@ -26,6 +27,12 @@ let keys = {
 }
 let floorCollusionBlocks = [];
 let platformCollusionBlocks = [];
+let camera = {
+    position: {
+        x: 0,
+        y: 0,
+    },
+}
 let animationId;
 
 let floorCollusions2D = [];
@@ -58,7 +65,8 @@ platformCollusions2D.forEach((row, rowIndex) => {
                 position: {
                     x: columnIndex * 16,
                     y: rowIndex * 16,
-                }
+                },
+                height: 7,
             }));
         }
     });
@@ -127,6 +135,9 @@ let player = new Player({
     }
 });
 
+// camera.position.y = -background.image.height + scaledCanvas.height;
+camera.position.y = -backgroundImageHeight + scaledCanvas.height;
+
 function animate() {
     animationId = requestAnimationFrame(animate);
 
@@ -136,26 +147,28 @@ function animate() {
     // Scale & translate background image 
     context.save()
     context.scale(4, 4);
-    context.translate(0, -background.image.height + scaledCanvas.height);
+    context.translate(camera.position.x, camera.position.y);
     background.update();
 
-    floorCollusionBlocks.forEach(floorCollusionBlock => {
-        floorCollusionBlock.update();
-    });
-    platformCollusionBlocks.forEach(platformCollusionBlock => {
-        platformCollusionBlock.update();
-    });
+    // floorCollusionBlocks.forEach(floorCollusionBlock => {
+    //     floorCollusionBlock.update();
+    // });
+    // platformCollusionBlocks.forEach(platformCollusionBlock => {
+    //     platformCollusionBlock.update();
+    // });
 
     player.velocity.x = 0;
     if (keys.a.pressed) {
         player.switchSprite('runLeft');
         player.lastDirection = 'left';
         player.velocity.x = -speed;
+        player.shouldPanCameraRight({ scaledCanvas, camera });
     }
     else if (keys.d.pressed) {
         player.switchSprite('runRight');
         player.lastDirection = 'right';
         player.velocity.x = speed;
+        player.shouldPanCameraLeft({ scaledCanvas, camera });
     }
     else if (player.velocity.y === 0) {
         if (player.lastDirection === 'left') {
@@ -170,6 +183,8 @@ function animate() {
     }
 
     if (player.velocity.y < 0) {
+        player.shouldPanCameraDown({ scaledCanvas, camera });
+
         if (player.lastDirection === 'left') {
             player.switchSprite('jumpLeft');
         }
@@ -178,6 +193,8 @@ function animate() {
         }
     }
     else if (player.velocity.y > 0) {
+        player.shouldPanCameraUp({ scaledCanvas, camera });
+
         if (player.lastDirection === 'left') {
             player.switchSprite('fallLeft');
         }
@@ -186,8 +203,10 @@ function animate() {
         }
     }
 
+    player.checkHorizontalCanvasCollusions();
     player.update();
     context.restore();
 }
 
 animate();
+// animate();
